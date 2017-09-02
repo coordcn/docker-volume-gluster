@@ -5,14 +5,13 @@ WORKDIR /go/src/app
 
 RUN make build
 
-FROM debian:testing-slim
-MAINTAINER Antoine GIRARD <antoine.girard@sapk.fr>
+FROM centos:7.3.1611
 
-RUN apt-get update \
- && apt-get install -y glusterfs-client \
- && mkdir -p /var/lib/docker-volumes/gluster \
- && apt-get autoclean -y && apt-get clean -y \
- && rm -rf /var/lib/apt/lists/*
+RUN yum update -y \
+    && yum install -y centos-release-gluster \
+    && yum install -y gluster*\
+    && mkdir -p /var/lib/docker-volumes/gluster \
+    && yum clean all
 
 COPY --from=build-env /go/src/app/docker-volume-gluster /usr/bin/docker-volume-gluster
 
